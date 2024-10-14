@@ -334,3 +334,52 @@ All of the above can be achieved by cloning the respective repository locally an
 9. Go to “Actions” tab of the repository, in order to see the progress of the triggered “Publish” workflow
 
 ---
+
+Publishing process
+1. Publishing on metadata download webpage https://dhis2.org/metadata-downloads/
+2. Publishing on the implementation guide website https://docs.dhis2.org/en/implement/health
+
+### Publishing on metadata download webpage
+
+--TODO---
+create repo in GH https://github.com/dhis2-metadata/
+
+template NTD_AGG or create structure manually (create release notes, installation, overview, ....) copy files from another repo
+
+create branch 2.40 if you're publishing in 2.40 and so on. Add the github workflow file to the created branch
+
+Create release note & installation guide in docs folder in master branch
+
+
+Once everythig is ready to punlish, release on GH repo. In order to be able to release, repo should have a release note & installation guide in docs folder in master branch
+
+Create a release. Create a tag and select proper branch.
+
+Once the release process finishes, an entry is added on the downoad-index file https://github.com/dhis2-metadata/downloads-index
+
+
+The PR should be approved. 
+
+For pusblishing in ES language, entry should be added manually.
+
+
+### Publishing on the implementation guide website
+Once the metadata package was published/released, you're able to publish it in implementation guide website.
+
+For this, you'll need to work in the repository https://github.com/dhis2/dhis2-docs-implementation and to edit the file `implementation_section_index.yml`
+https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml
+
+1. Edit the `implementation_section_index.yml` file
+https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml
+2. Add the links you want to show in the left bar website menu. Normally, you should link the "Release Note", "Design" and "Installation" guides. 
+
+For example, to show the HIV guides as in the following image:
+![implementaion-docs-menu](images/implementaion-docs-menu.png)
+
+You should add the highlighted links in the `implementation_section_index.yml` file.
+![implementaion-docs-links](images/implementaion-docs-links.png)
+
+3. Create a pull request. Somebody will need to review your commits and somebody else will merge your changes into master branch.
+4. Once your pull request was merged, a nightly process will publish your changes in the implementation guide website the day after.
+
+---
