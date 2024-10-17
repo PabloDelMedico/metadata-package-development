@@ -250,7 +250,7 @@ The “Publish” GitHub workflow needs to be added to every “feature” branc
 
 You can find two step by step guides for [adding the “Publish” workflow to a repository](#how-to-add-the-publish-workflow-to-a-given-branch) we want to publish from, as well as [how to create new Releases/Tags](#how-to-create-new-a-release-and-tag) in order to trigger the workflow for a new package version.
 
-## Overview
+### Overview
 
 ``` mermaid
     %%{init: {'mirrorActors': false } }%%
@@ -335,42 +335,51 @@ All of the above can be achieved by cloning the respective repository locally an
 
 ---
 
-Publishing process
-1. Publishing on metadata download webpage https://dhis2.org/metadata-downloads/
-2. Publishing on the implementation guide website https://docs.dhis2.org/en/implement/health
+## Publishing Metadata Packages
+Once a metadata package is ready to go live, there are two main processes that you should follow.
+1. Publishing on [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage
+2. Publishing on the [Implementation Guide](https://docs.dhis2.org/en/implement/health) webpage
 
-### Publishing on metadata download webpage
+### Publishing on Metadata Packages Download
+This section tries to complement the section [Releasing Metadata Packages](#releasing-metadata-packages) by describing the steps that you should do manually. 
 
---TODO---
-create repo in GH https://github.com/dhis2-metadata/
+For more details, please, read sections [Publish workflow summary](#publish-workflow-summary), [How to add the Publish workflow to a given branch](#how-to-add-the-publish-workflow-to-a-given-branch) and [How to create new a Release and Tag](#how-to-create-new-a-release-and-tag).
 
-template NTD_AGG or create structure manually (create release notes, installation, overview, ....) copy files from another repo
-
-create branch 2.40 if you're publishing in 2.40 and so on. Add the github workflow file to the created branch
-
-Create release note & installation guide in docs folder in master branch
-
-
-Once everythig is ready to punlish, release on GH repo. In order to be able to release, repo should have a release note & installation guide in docs folder in master branch
-
-Create a release. Create a tag and select proper branch.
-
-Once the release process finishes, an entry is added on the downoad-index file https://github.com/dhis2-metadata/downloads-index
+1. The repository for a particular package should already exists (based on the package code, e.g. HIV_CS or TB_AGG) in the repository [dhis2-metadata](https://github.com/dhis2-metadata/).
+For creating the repository, you've 2 ways:
+- Create it using the template NTD_AGG.
+- Create an empty repository and create the folder structure manually (release notes, installation, overview and design guides should be placed in docs folder in master branch)
 
 
-The PR should be approved. 
+2. a _feature branch_ should already exists in the repository for the version you are pushing (e.g. 2.39, 2.40)
+3. Add the github workflow file to the created _feature branch_. Check section [How to add the Publish workflow to a given branch](#how-to-add-the-publish-workflow-to-a-given-branch)
+4. Create a release on the repository. Check section [How to create new a Release and Tag](#how-to-create-new-a-release-and-tag)
+> Release notes & Installation guide are required to finish the publish process and they should be placed in docs folder in master branch.
 
-For pusblishing in ES language, entry should be added manually.
+5. Once the release process finishes, a pull request is created in the repository [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) and an entry is added on the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file.
+6. After the pull request was approved, your metadata package should appears in [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage.
 
 
-### Publishing on the implementation guide website
-Once the metadata package was published/released, you're able to publish it in implementation guide website.
+#### Publishing in other language than English
+For publishing in ES language, an entry should be added manually in the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file and files uploaded to S3 buckets.
 
-For this, you'll need to work in the repository https://github.com/dhis2/dhis2-docs-implementation and to edit the file `implementation_section_index.yml`
-https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml
+1. Generate the ES package reference files via the [dev-otta/metadatareference](https://github.com/dev-otta/metadatareference) tool.
+2. Upload the package archive to S3 Buckets (containing the packages and reference files). You should create the path folder following the package code, package version and dhis2 version.
 
-1. Edit the `implementation_section_index.yml` file
-https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml
+For example, in the following image, we're uploading the package archive with `package code=HIV_CS`, `package version=2.0.1` and `dhis2 version=2.40`.
+![s3-buckets](images/s3-buckets.png)
+
+3. Update the [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) file, which is used to control what packages are shown on the Downloads page.
+
+![downloads-index-es](images/downloads-index-es.png)
+
+### Publishing on the Implementation Guide website
+Once the metadata package was published/released by previous step, you're able to publish it in implementation guide website.
+
+For this, you'll need to work in the repository [dhis2-docs-implementation](https://github.com/dhis2/dhis2-docs-implementation) and to edit the file [implementation_section_index.yml](https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml)
+
+1. Edit the [implementation_section_index.yml](https://github.com/dhis2/dhis2-docs-implementation/blob/master/implementation_section_index.yml) file
+
 2. Add the links you want to show in the left bar website menu. Normally, you should link the "Release Note", "Design" and "Installation" guides. 
 
 For example, to show the HIV guides as in the following image:
@@ -379,7 +388,7 @@ For example, to show the HIV guides as in the following image:
 You should add the highlighted links in the `implementation_section_index.yml` file.
 ![implementaion-docs-links](images/implementaion-docs-links.png)
 
-3. Create a pull request. Somebody will need to review your commits and somebody else will merge your changes into master branch.
+3. Create a pull request Somebody will need to review your commits and somebody else will merge your changes into master branch.
 4. Once your pull request was merged, a nightly process will publish your changes in the implementation guide website the day after.
 
 ---
