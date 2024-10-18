@@ -355,9 +355,10 @@ For creating the repository, you've 2 ways:
 4. Create a release on the repository. Check section [How to create new a Release and Tag](#how-to-create-new-a-release-and-tag)
 > Release notes & Installation guide are required to finish the publish process and they should be placed under docs folder in master branch.
 
-5. Once the release process finishes, a pull request is created in the repository [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) and an entry is added automatically in the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file.
-6. After the pull request is approved, your metadata package should appears in [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage.
+5. Once the release process finishes, an entry is added automatically in the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file and a pull request is created in the repository [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index).
+> At this point, if you realize you did something wrong and have to delete your release, delete the release from repository but also remember to delete the pull request from [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index)
 
+6. After the pull request is approved, your metadata package should appears in [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage.
 
 #### Publishing in other language than English
 For publishing in ES language, an entry should be added manually in the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file and files uploaded to S3 buckets.
