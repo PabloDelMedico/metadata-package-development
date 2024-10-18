@@ -348,16 +348,15 @@ For more details, please, read sections [Publish workflow summary](#publish-work
 1. The repository for a particular package should already exists (based on the package code, e.g. HIV_CS or TB_AGG) in the repository [dhis2-metadata](https://github.com/dhis2-metadata/).
 For creating the repository, you've 2 ways:
 - Create it using the template NTD_AGG.
-- Create an empty repository and create the folder structure manually (release notes, installation, overview and design guides should be placed in docs folder in master branch)
-
+- Create an empty repository and create the folder structure manually (release notes, installation, overview and design guides should be placed under docs folder in master branch)
 
 2. a _feature branch_ should already exists in the repository for the version you are pushing (e.g. 2.39, 2.40)
 3. Add the github workflow file to the created _feature branch_. Check section [How to add the Publish workflow to a given branch](#how-to-add-the-publish-workflow-to-a-given-branch)
 4. Create a release on the repository. Check section [How to create new a Release and Tag](#how-to-create-new-a-release-and-tag)
-> Release notes & Installation guide are required to finish the publish process and they should be placed in docs folder in master branch.
+> Release notes & Installation guide are required to finish the publish process and they should be placed under docs folder in master branch.
 
-5. Once the release process finishes, a pull request is created in the repository [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) and an entry is added on the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file.
-6. After the pull request was approved, your metadata package should appears in [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage.
+5. Once the release process finishes, a pull request is created in the repository [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) and an entry is added automatically in the [download-index/index.json](https://github.com/dhis2-metadata/downloads-index/blob/master/index.json) file.
+6. After the pull request is approved, your metadata package should appears in [Metadata Packages Download](https://dhis2.org/metadata-downloads) webpage.
 
 
 #### Publishing in other language than English
@@ -372,6 +371,8 @@ For example, in the following image, we're uploading the package archive with `p
 3. Update the [Metadata Packages Download Index](https://github.com/dhis2-metadata/downloads-index) file, which is used to control what packages are shown on the Downloads page.
 
 ![downloads-index-es](images/downloads-index-es.png)
+
+> URLs where metadata packages are uploaded are generated automatically with the domain https://packages.dhis2.org/ and following certain structure with language and package code, package and dhis2 version.
 
 ### Publishing on the Implementation Guide website
 Once the metadata package was published/released by previous step, you're able to publish it in implementation guide website.
