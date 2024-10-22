@@ -41,7 +41,7 @@
 Before you begin, ensure you have the following:
 
 - Collaborator access to [dhis2-metadata GitHub organisation](https://github.com/dhis2-metadata)
-- Access to [Jenkins](https://jenkins)
+- Access to [Jenkins](https://ci.dhis2.org/)
 - Access to the [Metadata Packages Index spreadsheet](#metadata-packages-index-spreadsheet)
 - Access to [DHIS2 S3](https://s3.console.aws.amazon.com/s3/home) (optional)
 - Basic knowledge of markdown syntax. [Markdown support and extensions guide](https://docs.dhis2.org/en/implement/support-and-documentation/dhis2-documentation-guide.html?h=markdown#markdown_support_and_extensions) provides an overview of supported functionality. The structure of markdown documents is addressed in the [Markdown File Structure](#markdown-file-structure) section.
@@ -83,26 +83,30 @@ Before you begin, ensure you have the following:
 
 ## Developing Metadata Packages
 
-### [Metadata Packages Index spreadsheet](https://docs.google.com/spreadsheets/d/1IIQL2IkGJqiIWLr6Bgg7p9fE78AwQYhHBNGoV-spGOM)
+### Metadata Packages Index spreadsheet
 
-The Metadata Packages Index spreadsheet is the source-of-truth for Metadata Package details like Package Code, Package Name, Component Name, Health Area (name and code), etc.
+The [Metadata Packages Index spreadsheet](https://docs.google.com/spreadsheets/d/1IIQL2IkGJqiIWLr6Bgg7p9fE78AwQYhHBNGoV-spGOM) is the source-of-truth for Metadata Package details like Package Code, Package Name, Component Name, Health Area (name and code), etc.
 This means that changes should be done carefully and should be communicated with the team.
 
 #### Columns
 The spreadsheet contains two "checkbox" columns that are used to distinguish packages and control how the spreadsheet is parsed by the [Exporter](#exporter-pipeline) and [Export Triggerer](#export-triggerer-pipeline) pipelines.
 The rest are standard text columns containing details about exporting a given package.
 
-* `Enabled` - enables packages for parsing by the pipelines below; any package that you would like to like to see in the `PACKAGE_NAME` parameter list for the [Exporter pipeline](#exporter-pipeline) has to be enabled in this column
+* `Enabled` - enables packages for parsing by the pipelines below; any package that you would like to see in the `PACKAGE_NAME` parameter list for the [Exporter pipeline](#exporter-pipeline) has to be enabled in this column
 * `Ready for Export` - enables exporting for packages by the [Export Triggerer pipeline](#export-triggerer-pipeline) and can be used to export a list of packages at once without having to start builds of the [Exporter pipeline](#exporter-pipeline) manually for each package; note that the checkboxes in this column are reset back to "false/unchecked" after each build of the Export Triggerer pipeline
 * `Package Code` - the code used to distinguish a given package from the rest
-* `Package Type` - abbreviated version of the type of the package
+* `Package Type` - abbreviated version of the type of the package, like `AGG` (aggregate), `EVT` (event), `TRK` (tracker), `DSH` (dashboard)
 * `Type Name` - human-friendly version of the type of the package
 * `Supported DHIS2 Versions` -  a comma-separated list of DHIS2 versions that the given package can and should be exported from (currently, not in the past)
-* `Source Instance` - the instance and database that contain the package (where it can be exported from)
+* `Source Instance` - the dhis2 instance that contains the package developed (where it can be exported from)
 * `Component Name` - the unique name of each package component, like "TB Aggregate (complete)"
 * `Package Name` - a broader name of the whole package (that may contain multiple Components), like "TB HMIS"
 * `Health Area` - human-friendly name of the health area the package is part of
 * `Health Area Code` - abbreviated version of the health area
+
+![Metadata-package-index.png](images/Metadata-package-index.png)
+
+[//]: # (TODO Explain the logic behind Component Name, Package Name, Health Area. Which is the logic behind this?)
 
 ### Develop pipeline
 
@@ -125,7 +129,7 @@ Each instance is using a separate environment with a separate database, with the
 * `DHIS2_IMAGE_REPOSITORY` - the DockerHub image repository
   * `core` - https://hub.docker.com/r/dhis2/core (only stable releases and release candidates)
   * `core-dev` - https://hub.docker.com/r/dhis2/core-dev (development releases)
-* `DHIS2_VERSION` - the DHIS2 verison to use; note that it has to be a valid `tag` from one of the DockerHub repositories above
+* `DHIS2_VERSION` - the DHIS2 version to use; note that it has to be a valid `tag` from one of the DockerHub repositories above
 * `TTL` - the Time To Live of the instance, in case it's only temporary and the user would like to get it cleand up automatically; by default "development" instances will exist until manually deleted
 
 ---
@@ -153,7 +157,7 @@ It creates a “staging” instance and does all the rest of the work (testing, 
 * `DHIS2_IMAGE_REPOSITORY` - the DockerHub image repository
   * `core` - https://hub.docker.com/r/dhis2/core (only stable releases and release candidates)
   * `core-dev` - https://hub.docker.com/r/dhis2/core-dev (development releases)
-* `DHIS2_VERSION` - the DHIS2 verison to use; note that it has to be a valid `tag` from one of the DockerHub repositories above
+* `DHIS2_VERSION` - the DHIS2 version to use; note that it has to be a valid `tag` from one of the DockerHub repositories above
 * `DEV_INSTANCE_NAME` - the full development instance name to export the selected package from
 * `PACKAGE_NAME` - name of the package to export; populated by the [packages spreadsheet](#metadata-packages-index-spreadsheet), and based on what a user selects - the rest of the required parameters for exporting a package are also taken from that spreadsheet
 * `PACKAGE_FILE_UPLOAD` - can be used to upload a package file directly, instead of exporting it from a development instance (for example, just for testing it)
@@ -202,10 +206,13 @@ Note that if you both specify a dev instance and upload a package, the dev insta
 
 ## Exporting Metadata Packages
 
-### Exporter pipeline
+### Metadata exporter pipeline
 
-[The Exporter pipeline](https://jenkins/job/test-metadata-exporter-v2) export a Metadata Package from a given instance, tests it (by importing into an empty DHIS2 instance, validating the metadata and running the PR expressions and Dashboard checks) and finally pushes the package to its GitHub repository (based on the Package Code).
+The [Metadata exporter pipeline (`metadata-exporter`)](https://ci.dhis2.org/job/metadata-exporter/) export a Metadata Package from a given instance, tests it (by importing into an empty DHIS2 instance, validating the metadata and running the PR expressions and Dashboard checks) and finally pushes the package to its GitHub repository (based on the Package Code).
 This is the final export and testing of a package, after that the only step that remains is releasing the package once it's considered ready.
+
+[//]: # (TODO Review pipeline stages and update documentation)
+[//]: # (TODO Dashboard checks is not being executed, stage "Run Checks". Pipeline stage "Run Checks" is disabled. Which is the future for this?)
 
 ![exporter pipeline parameters](images/exporter-pipeline-parameters.png)
 
@@ -394,3 +401,5 @@ You should add the highlighted links in the `implementation_section_index.yml` f
 4. Once your pull request was merged, a nightly process will publish your changes in the implementation guide website the day after.
 
 ---
+
+[//]: # (TODO Publication process includes dummy data, demo server upload, etc???? Explain!!!!!)
